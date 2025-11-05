@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "chrome",
+            "name": "http://npm install -D @types/node",
+            "request": "launch",
+            "url": "http://npm install -D @types/node"
+        }
+    ]
+}
