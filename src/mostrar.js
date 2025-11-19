@@ -4,34 +4,69 @@ const prompt = promptSync();
 
 export function mostrar()
 {
-    lista.mostrar();
+    console.log("\n--- MOSTRAR TAREAS ---");
+    console.log("[1] Todas las tareas \n[2] Tareas en proceso \n[3] Tareas terminadas \n[4] Tareas pendientes \n[5] Tareas canceladas");
+    const opcion = prompt("Elija una opción para mostrar: ");
 
-    console.log("Desea editar la tarea? (s/n)");
-    let respuesta = prompt().toLowerCase();
-        if (respuesta === 's') 
+    const estados = 
+    {
+        "2": "en proceso",
+        "3": "terminada",
+        "4": "pendiente",
+        "5": "cancelada" 
+    }
+ 
+    if (opcion === "1")
+    {
+        lista.mostrar();
+    }
+    else if (estados[opcion])
+    {
+        const e = estados[opcion];
+
+        //filtrar las tareas
+        const tareasfiltradas = lista.tareas.filter(t => t.estado === e);
+
+        //verificar si se encontro algo
+        if(tareasfiltradas.length === 0)
         {
-            let numTarea = parseInt(prompt("Ingrese el número de la tarea a editar: ")) - 1;
-                if (numTarea >= 0 && numTarea < lista.tareas.length) 
-                {
-                    let tareaAEditar = lista.tareas[numTarea];
-                    console.log("Ingrese los nuevos datos (deje en blanco para no cambiar):");
-                    
-                    let nuevoTitulo = prompt(`Nuevo título (${tareaAEditar.titulo}): `);
-                    let nuevaDescripcion = prompt(`Nueva descripción (${tareaAEditar.descripcion}): `);
-                    let nuevaDificultad = prompt(`Nueva dificultad ([1] baja, [2] media, [3] alta) (${tareaAEditar.dificultad}): `);
-                        if (nuevaDificultad === "1") nuevaDificultad = "⭐";
-                        else if (nuevaDificultad === "2") nuevaDificultad = "⭐⭐";
-                        else if (nuevaDificultad === "3") nuevaDificultad = "⭐⭐⭐";
-                    let nuevoVencimiento = prompt(`Nueva fecha de vencimiento (${tareaAEditar.vencimiento}): `);
-                    
-                    if (nuevoTitulo) tareaAEditar.titulo = nuevoTitulo;
-                    if (nuevaDescripcion) tareaAEditar.descripcion = nuevaDescripcion;
-                    if (nuevaDificultad) tareaAEditar.dificultad = nuevaDificultad;
-                    if (nuevoVencimiento) tareaAEditar.vencimiento = nuevoVencimiento;
-                    console.log("✅ Tarea editada exitosamente.");
-                } 
-                else {
-                    console.log("❌ Número de tarea inválido.");
-                }
-            }
+            console.log(`No hay tareas para mostrar con el estado: "${e}"`);
+        }
+        else
+        {
+            console.log("---LISTA DE TAREAS---");
+            
+            tareasfiltradas.forEach((t, index) => console.log(`[${index + 1}] 📌 ${t.titulo}`));
+        }
+    }
+    else 
+    {
+        console.log("Opcion no valida.");
+    }
+
+    //---DETALLE--
+
+    console.log("Desea ver el detalle de alguna tarea? (s/n)");
+
+    const respuesta = prompt().toLowerCase();
+
+    if (respuesta === 's') 
+    {
+        const idTarea = parseInt(prompt("Ingrese el número de la tarea: "));
+
+        //buscar la tarea por id
+
+        const tareaEncontrada = lista.tareas.find(t => t.id === idTarea)
+        
+        if (tareaEncontrada) 
+        {
+            tareaEncontrada.detalle();
+
+            editarTarea(tareaEncontrada);
+        }
+        else 
+        {
+            console.log("❌ No se encontró la tarea.");
+        }
+    }
 }
